@@ -16,6 +16,7 @@ const LoggedInUserDetail = {
     console.log(loginuser)
     console.log(loginuser.data.token)
     alert("user logged in successfully")
+    window.location.href = './ChatApp.js'
   }
 }catch(err){
     document.body.innerHTML += 'Error:wrong email or password'
