@@ -1,6 +1,10 @@
-async function login(event){
-const Email = event.target.Email;
-const Password = event.targrt.Password;
+
+async function Login(event){
+try{
+    event.preventDefault();
+   console.log("inside login")
+const Email = event.target.email.value;
+const Password = event.target.password.value;
 
 const LoggedInUserDetail = {
     Email:Email,
@@ -9,8 +13,12 @@ const LoggedInUserDetail = {
 
  const loginuser = await axios.post('http://localhost:3000/login/loginuser',LoggedInUserDetail);
   if(loginuser.status === 201){
+    console.log(loginuser)
+    console.log(loginuser.data.token)
     alert("user logged in successfully")
-  }else{
-    alert("user not present please signup")
   }
+}catch(err){
+    document.body.innerHTML += 'Error:wrong email or password'
+    console.log(err)
+}
 }

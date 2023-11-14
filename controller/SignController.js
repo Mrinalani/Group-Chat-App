@@ -1,6 +1,11 @@
-
+const jwt = require('jsonwebtoken');
 const signup = require('../Model/SignUpModel')
 const bcrypt = require('bcrypt')
+
+function generateExcessToken(id,name){
+    return jwt.sign({id:id,name:name},'mysecretcode')
+    
+  }
 
 exports.PostSignup = async(req,res,next)=>{
       console.log("reach backend")
@@ -31,6 +36,31 @@ exports.PostSignup = async(req,res,next)=>{
 
     }catch(err){
         console.log("errors are:",err.message)
+    }
+}
+
+exports.postlogin = async(req,res,next)=>{
+    try{
+    const Email= req.body.Email;
+    const Password = req.body.Password
+    const userpresent = await signup.findAll({where:{Email:Email}})
+      if(userpresent.length>0){
+        bcrypt.compare(Password,userpresent[0].Password,(err,result)=>{
+            if(err){
+            return res.status(500).json({message:"problem comparing password"})
+            }
+            if(result == true){
+           return res.status(201).json({message:"user is present",token:generateExcessToken(userpresent[0].id,userpresent[0].name)})
+            }else{
+           return res.status(400).json({message:"password is incorrect"})    
+            }
+          })
+
+          }else{
+           return res.status(401).json({message:'User Not Found'})
+      }
+    }catch(err){
+        console.log(err)
     }
 }
 
