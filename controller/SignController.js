@@ -17,13 +17,20 @@ exports.PostSignup = async(req,res,next)=>{
             console.log("err in password hashing");
             return res.status(500).json({ error: "Password hashing failed" });
         }
+        const alredyuser = await signup.findAll({where:{Email:Email}})
+        if(alredyuser.length>0){
+            console.log(alredyuser)
+            res.status(200).json({message:"user alredy present"})
+        }else{
         const userinfo = await signup.create({ Name: Name, Email: Email, Phone: Phone, Password: hash });
         console.log("response1");
         res.status(201).json({ data: userinfo, message: "done post signup" });
         console.log("response2");
+        }
     });
 
     }catch(err){
-        console.log(err)
+        console.log("errors are:",err.message)
     }
 }
+

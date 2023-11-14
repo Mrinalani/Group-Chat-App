@@ -13,8 +13,13 @@ const SignupDetail = {
     Password: Password
 }
 console.log(SignupDetail)
+
 const response = await axios.post('http://localhost:3000/user/signup',SignupDetail)
-    if(response.status == 201){
+   if(response.status ===200){
+       console.log("user alredy in use")
+       alert("User alredy exist please login")
+   }
+    else if(response.status === 201){
         console.log("sign up successfull")
         alert("User Successfully Signed Up")
     }else{
