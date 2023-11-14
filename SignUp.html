@@ -6,7 +6,7 @@
     <title>Sign-UP-page</title>
 </head>
 <body>
-    <form action="" method="post">
+    <form action="" method="post" onsubmit="UsersInfo(event)">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required>
 
@@ -22,5 +22,7 @@
         <button type="submit">Sign Up</button>
     </form>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script src="./SignUp.js"></script>
 </body>
 </html>
