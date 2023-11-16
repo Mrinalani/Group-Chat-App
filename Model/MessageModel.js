@@ -10,7 +10,7 @@ const messages = sequelize.define('messages',{
     },
     message:{
         type:Sequelize.TEXT
-    }
+    },
    
 })
 

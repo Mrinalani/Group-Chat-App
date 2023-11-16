@@ -24,6 +24,10 @@ const Signup = sequelize.define('signup',{
     Password:{
         type:Sequelize.TEXT,
         allowNull: false,  
+    },
+    Active:{
+        type:Sequelize.BOOLEAN,
+        defaultValue: false
     }
 })
 

@@ -13,4 +13,8 @@ router.post('/user/message',authentication.authenticate, SignUpController.postme
 
 router.get('/user/getmessage',authentication.authenticate, SignUpController.getmessages)
 
+router.put('/user/active/:prodid',SignUpController.updateactive)
+
+router.get('/get/activeusers',SignUpController.getactiveusers)
+
 module.exports = router
