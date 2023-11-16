@@ -15,8 +15,9 @@ const LoggedInUserDetail = {
   if(loginuser.status === 201){
     console.log(loginuser)
     console.log(loginuser.data.token)
+    localStorage.setItem('token',loginuser.data.token);
     alert("user logged in successfully")
-    window.location.href = './ChatApp.js'
+    window.location.href = './ChatApp.html'
   }
 }catch(err){
     document.body.innerHTML += 'Error:wrong email or password'

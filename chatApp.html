@@ -2,27 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatAppPage</title>
+    <title>Chat App</title>
+    <style>
+        #chatContainer {
+            border: 1px solid #ccc;
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        #messageInput {
+            width: 70%;
+        }
+
+        #sendMessageBtn {
+            width: 28%;
+            margin-left: 2%;
+        }
+
+        #inputContainer {
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
 
     <h2>Chat App</h2>
-    <br> <br> <br>
+    <div id="usersContainer">users
+        <ul id="users"></ul>
+    </div>
 
-    <label for="user1">First User:</label><br>
-    <input id="firstuser" type="text" name="user1" >
-    <br><br>
+    <div id="chatContainer">chats
+        <ul id="chats"></ul>
+    </div>
 
-    <label for="user2">Second User:</label><br>
-    <input id="seconduser" type="text" name="user2" >
-    <br> <br> <br>
+    <div id="inputContainer">
+        <form action="" onsubmit="sendmessage(event)">
+        <input id="messageInput" type="text" placeholder="Type your message...">
+        <button id="sendMessageBtn">Send</button>
+    </form>
+    </div>
 
-    <label for="message">Type Your Message:</label>
-    <input id="messageInput" type="text" name="message">
-    <button onclick="sendMessage()">Send</button>
-
-    
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script src="ChatApp.js"></script>
 </body>
 </html>

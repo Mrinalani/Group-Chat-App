@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const signup = require('../Model/SignUpModel')
+const Message = require('../Model/MessageModel')
 const bcrypt = require('bcrypt')
 
 function generateExcessToken(id,name){
@@ -50,7 +51,7 @@ exports.postlogin = async(req,res,next)=>{
             return res.status(500).json({message:"problem comparing password"})
             }
             if(result == true){
-           return res.status(201).json({message:"user is present",token:generateExcessToken(userpresent[0].id,userpresent[0].name)})
+           return res.status(201).json({message:"user is present",token:generateExcessToken(userpresent[0].id,userpresent[0].Name)})
             }else{
            return res.status(400).json({message:"password is incorrect"})    
             }
@@ -62,5 +63,15 @@ exports.postlogin = async(req,res,next)=>{
     }catch(err){
         console.log(err)
     }
+}
+
+exports.postmessage = async(req,res,next)=>{
+    const message = req.body.message
+    console.log(message)
+
+    const data = await Message.create({message:message, signupId:req.user.id})
+   // console.log(data)
+
+    res.status(201).json({message:'successfull post', data:data})
 }
 

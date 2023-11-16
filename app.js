@@ -5,6 +5,10 @@ const cors = require('cors')
 const signupRouter = require('./Router/SignUpRouter')
 const sequelize = require('./util/database')
 
+const User = require('./Model/SignUpModel')
+const Message = require('./Model/MessageModel')
+
+
 const app = express();
 app.use(cors({
     origin: 'http://127.0.0.1:5500',
@@ -15,6 +19,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(signupRouter)
+
+User.hasMany(Message);
+Message.belongsTo(User)
+
 
 sequelize.sync({})
     .then(() => {
