@@ -11,4 +11,6 @@ router.post('/login/loginuser',SignUpController.postlogin)
 
 router.post('/user/message',authentication.authenticate, SignUpController.postmessage)
 
+router.get('/user/getmessage',authentication.authenticate, SignUpController.getmessages)
+
 module.exports = router

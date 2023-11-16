@@ -18,11 +18,23 @@ window.addEventListener('DOMContentLoaded', async()=>{
     console.log(decodedtoken)
     const userName = decodedtoken.name
 
-
     const user = document.getElementById('users')
     const li = document.createElement('li')
     li.textContent = `${userName} has joined`
     user.appendChild(li)
+
+
+   const allmessagesofpartiuser = await axios.get('http://localhost:3000/user/getmessage', { headers: { "Authorization": token } })
+    const data = allmessagesofpartiuser.data.retrievedvalue
+    console.log("retrieved message = ",data)
+    console.log("username", allmessagesofpartiuser.data.message)
+
+    for(var i =0; i<data.length; i++){
+        const user = document.getElementById('chats')
+    const li = document.createElement('li')
+    li.textContent = `${userName}:${data[i].message}`
+    user.appendChild(li)
+    }
 })
 
 async function sendmessage(event){

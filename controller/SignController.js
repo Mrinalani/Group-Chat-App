@@ -75,3 +75,9 @@ exports.postmessage = async(req,res,next)=>{
     res.status(201).json({message:'successfull post', data:data})
 }
 
+exports.getmessages = async(req,res,next)=>{
+    const data = await Message.findAll({where:{signupId:req.user.id}})
+
+    res.status(201).json({message:req.user.Name, retrievedvalue:data})
+}
+
