@@ -22,6 +22,7 @@ const response = await axios.post('http://localhost:3000/user/signup',SignupDeta
     else if(response.status === 201){
         console.log("sign up successfull")
         alert("User Successfully Signed Up")
+        window.location.href = '../Login/login.html'
     }else{
         throw new Error("failed to sign up")
     }

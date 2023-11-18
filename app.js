@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 const signupRouter = require('./Router/SignUpRouter')
+const ChatAppRouter = require('./Router/chatAppRouter')
 const sequelize = require('./util/database')
 
 const User = require('./Model/SignUpModel')
@@ -19,6 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(signupRouter)
+app.use(ChatAppRouter)
 
 User.hasMany(Message);
 Message.belongsTo(User)
