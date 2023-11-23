@@ -56,7 +56,7 @@ addParticipantBtn.addEventListener('click', async (e) => {
 
         const userLabel = document.createElement('label');
         userLabel.htmlFor = `user-${user.id}`;
-        userLabel.textContent = `${user.Name} ${user.id})`;
+        userLabel.textContent = `${user.id} ${user.Name} `;
  
         if (groupMembersResponse.data.some(member => member.id === user.id)) {
             userCheckbox.checked = true;
@@ -67,6 +67,14 @@ addParticipantBtn.addEventListener('click', async (e) => {
         const userDiv = document.createElement('div');
         userDiv.appendChild(userCheckbox);
         userDiv.appendChild(userLabel);
+
+        const makeAdminButton = document.createElement('button');
+        makeAdminButton.textContent = 'Make Admin';
+        makeAdminButton.addEventListener('click', () => {
+            makeAdmin(user.id, groupId); 
+        });
+    
+        userDiv.appendChild(makeAdminButton);
 
         participantsContainer.appendChild(userDiv);
     });
@@ -138,4 +146,18 @@ groupMembersButton.addEventListener('click', async () => {
         console.error('Error fetching group members:', error);
     }
 });
+
+async function makeAdmin(userId,groupId){
+    const Ids = {
+        userId: userId,
+        groupId: groupId
+    }
+    const adminMember = await axios.post('http://localhost:3000/user/makeAdmin',Ids)
+    if(adminMember.data.message === 'Now Admin'){
+        alert('successfully added admin')
+    }else{
+        alert('Make user Participant of group than admin')
+    }
+
+}
 

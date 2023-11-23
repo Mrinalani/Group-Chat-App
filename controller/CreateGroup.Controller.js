@@ -159,3 +159,31 @@ exports.userIsAdmin = async (req,res,next)=>{
         res.status(500).json({ error: 'Internal Server Error' });
       }
 }
+
+exports.makeAdmin = async (req, res, next) => {
+    try {
+        const userId = req.body.userId;
+        const groupId = req.body.groupId;
+
+        // Update the UserGroup record to set isAdmin to true
+        const updatedUserGroup = await UserGroup.update(
+            { isAdmin: true },
+            {
+                where: {
+                    signupId: userId,
+                    groupId: groupId,
+                },
+            }
+        );
+
+        if (updatedUserGroup[0] === 0) {
+            // If no rows were affected, the user may not be a member of the group
+            return res.status(201).json({ message: 'Not Done' });
+        }
+
+        res.status(201).json({ message: 'Now Admin' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};

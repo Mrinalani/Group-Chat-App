@@ -17,5 +17,7 @@ router.get('/groups/:groupId/members', creategroupcontroller.getGroupMembers);
 
 router.get('/user/isAdmin/:groupId', authentication.authenticate, creategroupcontroller.userIsAdmin)
 
+router.post('/user/makeAdmin', creategroupcontroller.makeAdmin)
+
 
 module.exports = router
