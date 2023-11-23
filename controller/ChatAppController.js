@@ -10,7 +10,7 @@ exports.postmessage = async(req,res,next)=>{
     
 
     const data = await Message.create({message:message, signupId:req.user.id})
-   // console.log(data)
+
 
     res.status(201).json({message:'successfull post', data:data, Name:message})
 }
@@ -20,8 +20,6 @@ exports.getmessages = async (req, res, next) => {
         console.log("hii inside get server messages")
         const { lastMessageId } = req.query;
 
-
-        // Use the filter method on the array
         const newMessages = await Message.findAll({
             where: {
                 id: {

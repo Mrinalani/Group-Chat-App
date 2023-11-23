@@ -166,7 +166,13 @@ const LogOut = document.getElementById('logout');
     const update = await axios.put('http://localhost:3000/update',null, { headers: { "Authorization": token } })
 
     if(update.data.message === 'success'){
+        alert("user logged Out Successfully")
         window.location.href = '../Login/login.html'
     }
 
 })
+
+const groupContainer = document.getElementById('SeeAllGroups')
+   groupContainer.addEventListener('click',async()=>{
+    
+   })
