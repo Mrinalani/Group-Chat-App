@@ -1,0 +1,99 @@
+/* Apply a modern and clean style to the entire page */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+}
+
+/* Style for the navigation bar container */
+#navcontainer {
+    display: flex;
+    justify-content: space-around;
+    background-color: #333;
+    padding: 10px 0;
+}
+
+/* Style for individual navigation links */
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+/* Change color on hover */
+nav a:hover {
+    background-color: #555;
+}
+
+/* Style for the main buttons */
+button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* Darken the button color on hover */
+button:hover {
+    background-color: #45a049;
+}
+
+/* Style for the container holding participants and group members */
+#participantsContainer,
+#groupMembersContainer {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for user cards inside the container */
+.user-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Style for the 'Add Participants' button */
+#addParticipantbtn {
+    background-color: #2196F3;
+}
+
+/* Style for the 'See All Members' button */
+#seeAllMemberOfThisGroup {
+    background-color: #ff9800;
+}
+
+#navcontainer {
+    display: flex;
+    justify-content: space-around;
+    background-color: #333;
+}
+
+/* Style for each individual navigation bar */
+nav {
+    padding: 15px;
+}
+
+/* Style for the links inside the navigation bar */
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Change color on hover */
+nav a:hover {
+    background-color: #555;
+}

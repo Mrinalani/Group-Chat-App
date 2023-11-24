@@ -11,6 +11,9 @@ const Chatting=sequelize.define('Chatting',{
     Chats:{
         type:Sequelize.TEXT
     },
+    userName:{
+        type:Sequelize.STRING
+    }
 })
 
 module.exports=Chatting

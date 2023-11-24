@@ -11,6 +11,9 @@ const messages = sequelize.define('messages',{
     message:{
         type:Sequelize.TEXT
     },
+    userName:{
+        type:Sequelize.STRING
+    }
    
 })
 

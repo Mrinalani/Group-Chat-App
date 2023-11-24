@@ -98,7 +98,11 @@ async function sendmessage(event){
 
     const chatcontainer = document.getElementById('chats')
     const li = document.createElement('li')
-    li.textContent = response.data.Name
+    if(response.data.data.userName===userName){
+        li.textContent = `you: ${response.data.data.message}`
+    }else{
+        li.textContent = `${response.data.data.userName}: ${response.data.data.message}`
+    }
     chatcontainer.appendChild(li)
 
     event.target.reset();
@@ -138,7 +142,7 @@ async function ShowMessagesOnScreen(){
       const lastMessageId = mergedData[mergedData.length-1].id
       console.log('lastMessageId:',lastMessageId)
 
-
+     console.log('checkingmergedData:',mergedData)
      ShowMergeMessageOnScreen(mergedData)
       StoreMergeMessageOnLS(mergedData,lastMessageId)
 }
@@ -146,11 +150,23 @@ async function ShowMessagesOnScreen(){
 }
 
 function ShowMergeMessageOnScreen(mergedData){
+    const token = localStorage.getItem('token')
+    const decodedtoken = parseJwt(token)
+    console.log(decodedtoken)
+    const userName = decodedtoken.name
+    
     console.log("under ShowMergeMessageOnScreen function")
     for(var i =0; i<mergedData.length; i++){
             const user = document.getElementById('chats')
-        const li = document.createElement('li')
-        li.textContent = `${mergedData[i].message}`
+        const li = document.createElement('p')
+
+        if(mergedData[i].userName === userName){
+            li.style.textAlign = 'left';
+            li.textContent = `you: ${mergedData[i].message}`
+        }else{
+            li.style.textAlign = 'right';
+            li.textContent = `${mergedData[i].userName}: ${mergedData[i].message}`
+        }
         user.appendChild(li)
         }
 }

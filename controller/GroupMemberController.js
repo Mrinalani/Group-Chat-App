@@ -59,10 +59,11 @@ exports.IsGroupMember = async(req,res,next)=>{
 exports.postGroupChats = async(req,res,next)=>{
     let message = req.body.message;
     const groupId = req.body.groupId
-    message = `${req.user.Name}: ${message}`
 
-    const data = await Chatting.create({Chats:message, groupId:groupId})
+    const data = await Chatting.create({Chats:message,userName:req.user.Name ,groupId:groupId})
     res.status(201).json({message:'success', RetrievedData:data})
+
+    console.log("%%%%%%%%%%%%%%",data)
 }
 
 exports.particulargroupchats = async(req,res,next)=>{
@@ -70,7 +71,7 @@ exports.particulargroupchats = async(req,res,next)=>{
     const groupId = req.params.groupId
     const data = await Chatting.findAll({where:{groupId:groupId}})
     console.log("data is", data )
-    res.status(201).json({RetrievedData:data, Name:userName})
+    res.status(201).json({RetrievedData:data})
 }
 
 exports.getGroupMessages = async(req,res,next)=>{

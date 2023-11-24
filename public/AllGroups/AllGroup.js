@@ -1,3 +1,14 @@
+function parseJwt (token) {
+  var base64Url = token.split('.')[1];
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+}
+
+
 const ismemberChecked = false;
 
 window.addEventListener('DOMContentLoaded', async()=>{
@@ -18,7 +29,7 @@ const AllGroups = document.getElementById('AllGroups');
         groupMembers.forEach((member) => {
         
             const groupNameElement = document.createElement('div');
-            groupNameElement.textContent = `Group: ${member.groupName} (ID: ${member.id})`;
+            groupNameElement.textContent = `Group:  ${member.groupName} `;
             groupNameElement.style.cursor = 'pointer';
             groupNameElement.style.color = 'blue'; 
            
@@ -108,6 +119,10 @@ const groupNamesString = groupNamesArray.join(', ');
 async function sendmessage(event){
 
   event.preventDefault();
+  const token = localStorage.getItem('token')
+  const decodedtoken = parseJwt(token)
+  console.log(decodedtoken)
+  const userName = decodedtoken.name
 
   const messageInput = document.getElementById('messageInput');
   const message = messageInput.value;
@@ -115,7 +130,6 @@ async function sendmessage(event){
 
 
   const groupId = localStorage.getItem('SelectedGroupId')
-  const token = localStorage.getItem('token')
 
   const content = {
       message:message,
@@ -127,8 +141,14 @@ async function sendmessage(event){
   console.log( "data",response.data.RetrievedData)
 
   const chatcontainer = document.getElementById('chats')
-  const li = document.createElement('li')
-  li.textContent = response.data.RetrievedData.Chats
+  const li = document.createElement('p')
+  if(response.data.RetrievedData.userName === userName){
+    li.style.textAlign = 'left';
+  li.textContent = `you: ${response.data.RetrievedData.Chats}`
+  }else{
+    li.style.textAlign = 'right';
+    li.textContent = `${response.data.RetrievedData.userName}: ${response.data.RetrievedData.Chats}`
+  }
   chatcontainer.appendChild(li)
 
   event.target.reset();
@@ -137,18 +157,26 @@ async function sendmessage(event){
 
 async function ShowUserChatsOnScreen(id){
   const token = localStorage.getItem('token')
-  const groupId = id
-  const groupdata = await axios.get(`http://localhost:3000/particulargroup/chats/${id}`,{headers:{'Authorization':token}})
-      console.log(groupdata.data)
-      const data = groupdata.data.RetrievedData
-     const Name = groupdata.data.Name
+  const decodedtoken = parseJwt(token)
+  console.log(decodedtoken)
+  const userName = decodedtoken.name
 
+  const groupdata = await axios.get(`http://localhost:3000/particulargroup/chats/${id}`,{headers:{'Authorization':token}})
+      console.log("checking@@@@@",groupdata.data)
+      const data = groupdata.data.RetrievedData
 
   const chatcontainer = document.getElementById('chats')
   chatcontainer.innerHTML = "";
   data.forEach((Chat)=>{
-    const li = document.createElement('li')
-    li.textContent = Chat.Chats
+    const li = document.createElement('p')
+    if(Chat.userName===userName){
+      li.style.textAlign = 'left';
+      li.textContent = `you: ${Chat.Chats}`
+    }else{
+      li.style.textAlign = 'right';
+      li.textContent = `${Chat.userName}: ${Chat.Chats}`
+
+    }
     chatcontainer.appendChild(li)
   
   })

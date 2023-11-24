@@ -5,14 +5,14 @@ const { Op } = require('sequelize');
 exports.postmessage = async(req,res,next)=>{
     var message = req.body.message
     console.log(message)
-    message = `${req.user.Name} : ${message}`
+   // message = `${req.user.Name} : ${message}`
 
     
 
-    const data = await Message.create({message:message, signupId:req.user.id})
+    const data = await Message.create({message:message, userName:req.user.Name, signupId:req.user.id})
 
 
-    res.status(201).json({message:'successfull post', data:data, Name:message})
+    res.status(201).json({message:'successfull post', data:data})
 }
 exports.getmessages = async (req, res, next) => {
     try {
