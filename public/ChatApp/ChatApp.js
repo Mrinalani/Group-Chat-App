@@ -19,7 +19,7 @@ window.addEventListener('DOMContentLoaded', async()=>{
     const userName = decodedtoken.name
 
    const activateusers = async()=>{
-    const activeusers = await axios.get('http://localhost:3000/get/activeusers')
+    const activeusers = await axios.get('http://16.171.5.45:3000/get/activeusers')
     console.log(activeusers)
     
     const active = activeusers.data.activeusers
@@ -35,7 +35,7 @@ window.addEventListener('DOMContentLoaded', async()=>{
 
 
    const updateactiveusers = async()=>{
-    const updateactive = await axios.put(`http://localhost:3000/user/active/${decodedtoken.id}`)
+    const updateactive = await axios.put(`http://16.171.5.45:3000/user/active/${decodedtoken.id}`)
       if(updateactive.status === 201){
         ShowMessagesOnScreen()
       }
@@ -43,7 +43,7 @@ window.addEventListener('DOMContentLoaded', async()=>{
    }
 
 //    const updateChatMessages = async () => {
-//     const allmessagesofpartiuser = await axios.get('http://localhost:3000/user/getmessage', { headers: { "Authorization": token } });
+//     const allmessagesofpartiuser = await axios.get('http://16.171.5.45:3000/user/getmessage', { headers: { "Authorization": token } });
 //     const data = allmessagesofpartiuser.data.retrievedvalue;
 //     console.log('Response from getmessage API:', data);
 
@@ -93,7 +93,7 @@ async function sendmessage(event){
     }
 
 
-    const response = await axios.post('http://localhost:3000/user/message', content,  { headers: { "Authorization": token } })
+    const response = await axios.post('http://16.171.5.45:3000/user/message', content,  { headers: { "Authorization": token } })
     console.log("*",response.data.Name)
 
     const chatcontainer = document.getElementById('chats')
@@ -118,7 +118,7 @@ async function ShowMessagesOnScreen(){
     const lastMessageId = localStorage.getItem('lastMessageId') || 0;
     console.log('lastMessageId:',lastMessageId)
 
-    const databasedata = await axios.get(`http://localhost:3000/server/messages?lastMessageId=${lastMessageId}`, { headers: { "Authorization": token } })
+    const databasedata = await axios.get(`http://16.171.5.45:3000/server/messages?lastMessageId=${lastMessageId}`, { headers: { "Authorization": token } })
     console.log('databasedata:',databasedata)
 
     const newmessages = databasedata.data.message
@@ -179,7 +179,7 @@ function StoreMergeMessageOnLS(mergedData,lastMessageId){
 const LogOut = document.getElementById('logout');
     LogOut.addEventListener('click', async () => {
     const token = localStorage.getItem('token');
-    const update = await axios.put('http://localhost:3000/update',null, { headers: { "Authorization": token } })
+    const update = await axios.put('http://16.171.5.45:3000/update',null, { headers: { "Authorization": token } })
 
     if(update.data.message === 'success'){
         alert("user logged Out Successfully")

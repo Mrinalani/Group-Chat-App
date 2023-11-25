@@ -1,7 +1,19 @@
 const express = require('express')
+const path = require('path');
 const bodyParser = require('body-parser')
 const cors = require('cors')
 require('dotenv').config();
+
+const app = express();
+app.use(cors({
+    origin: ['http://127.0.0.1:5500', 'http://16.171.5.45:3000'],
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    optionsSuccessStatus: 204,
+}));
+//app.use(cors())
+
+
 
 
 const signupRouter = require('./Router/SignUpRouter')
@@ -18,12 +30,6 @@ const Chatting = require('./Model/ChattingModel');
 
 
 
-const app = express();
-app.use(cors({
-    origin: 'http://127.0.0.1:5500',
-    credentials: true
-}));
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -31,6 +37,11 @@ app.use(signupRouter)
 app.use(ChatAppRouter)
 app.use(CreateGroupRouter)
 app.use(AllGroups)
+
+app.use((req, res) => {
+    console.log("url",req.url)
+res.sendFile(path.join(__dirname, `public/${req.url}`));
+});
 
 User.hasMany(Message);
 Message.belongsTo(User)
