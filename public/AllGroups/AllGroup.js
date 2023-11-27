@@ -55,7 +55,7 @@ const AllGroups = document.getElementById('AllGroups');
             addRemoveButton.addEventListener('click',()=>{
              const setgroupId = localStorage.setItem('groupId',member.id)
               console.log("id under addRemoveButton is",setgroupId )
-              window.location.href = '../CreateGroup/CreateGroup.html';
+              window.location.href = '../CreateGroup/Creategroup.html';
 
             })
 
