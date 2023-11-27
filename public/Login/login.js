@@ -11,7 +11,7 @@ const LoggedInUserDetail = {
     Password: Password
 }
 
- const loginuser = await axios.post('http://16.171.5.45:3000/login/loginuser',LoggedInUserDetail);
+ const loginuser = await axios.post('http://13.49.249.217:3000/login/loginuser',LoggedInUserDetail);
   if(loginuser.status === 201){
     console.log(loginuser)
     console.log(loginuser.data.token)

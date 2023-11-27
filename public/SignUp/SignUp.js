@@ -14,7 +14,7 @@ const SignupDetail = {
 }
 console.log(SignupDetail)
 
-const response = await axios.post('http://16.171.5.45:3000/user/signup',SignupDetail)
+const response = await axios.post('http://13.49.249.217:3000/user/signup',SignupDetail)
    if(response.status ===200){
        console.log("user alredy in use")
        alert("User alredy exist please login")
