@@ -3,13 +3,23 @@ const path = require('path');
 const bodyParser = require('body-parser')
 const cors = require('cors')
 require('dotenv').config();
+const http = require('http');
+const socketIo = require('socket.io');
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
 //app.use((cors))
+// app.use(cors({
+//     origin: '*',
+//     credentials: true
+// }));
+
 app.use(cors({
-    origin: '*',
+    origin: 'http://13.49.249.217:3000',
     credentials: true
-}));
+}))
 
 
 const signupRouter = require('./Router/SignUpRouter')
@@ -22,6 +32,7 @@ const User = require('./Model/SignUpModel');
 const Message = require('./Model/MessageModel');
 const Group = require('./Model/GroupModel');
 const UserGroup = require('./Model/userGroupModel'); 
+
 const Chatting = require('./Model/ChattingModel');
 
 
@@ -39,6 +50,36 @@ app.use((req, res) => {
 res.sendFile(path.join(__dirname, `public/${req.url}`));
 });
 
+
+io.on('connection', Onconnected)
+
+function Onconnected(socket){
+    console.log(socket.id)
+    io.emit('new-user', socket.id)
+
+    // socket.on('disconnect',()=>{
+    //     console.log('~~~~~~~~~~~~~~~~~~~~')
+    //    io.emit('remove-user', socket.id)
+    // })
+
+    // socket.on('loggedUser',(obj)=>{
+    //     console.log('........................',obj)
+    //     socket.emit('removing',obj)
+    // })
+
+    socket.on('message',(data)=>{
+        io.emit('chat-message',data)
+    })
+
+    socket.on('groupMessage', (content) => {
+        const groupId = content.groupId;
+        socket.join(groupId);
+        io.to(groupId).emit('group-chat-message', content);
+    });
+}
+   
+  
+
 User.hasMany(Message);
 Message.belongsTo(User)
 
@@ -52,8 +93,9 @@ Chatting.belongsTo(Group)
 sequelize.sync({})
     .then(() => {
         console.log('Database and tables synced');
-        app.listen(3000)
+        server.listen(3000)
     })
     .catch((err) => {
         console.error('Error syncing database:', err);
     });
+

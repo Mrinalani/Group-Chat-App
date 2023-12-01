@@ -1,6 +1,5 @@
 
 
-
 function parseJwt (token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -10,102 +9,129 @@ function parseJwt (token) {
   
     return JSON.parse(jsonPayload);
   }
-  
+  const socket = io();
+
 
 window.addEventListener('DOMContentLoaded', async()=>{
-    const token = localStorage.getItem('token')
-    const decodedtoken = parseJwt(token)
-    console.log(decodedtoken)
-    const userName = decodedtoken.name
 
-   const activateusers = async()=>{
-    const activeusers = await axios.get('http://13.49.249.217:3000/get/activeusers')
-    console.log(activeusers)
-    
-    const active = activeusers.data.activeusers
-    console.log(active)
-    for(var i =0; i<active.length; i++){
-    const user = document.getElementById('users')
-    const li = document.createElement('li')
-    li.textContent = `${active[i].Name} has joined`
-    user.appendChild(li)
-    }
-   }
-    
-
-
-   const updateactiveusers = async()=>{
-    const updateactive = await axios.put(`http://13.49.249.217:3000/user/active/${decodedtoken.id}`)
-      if(updateactive.status === 201){
-        ShowMessagesOnScreen()
-      }
-
-   }
-
-//    const updateChatMessages = async () => {
-//     const allmessagesofpartiuser = await axios.get('http://13.49.249.217:3000/user/getmessage', { headers: { "Authorization": token } });
-//     const data = allmessagesofpartiuser.data.retrievedvalue;
-//     console.log('Response from getmessage API:', data);
-
-//     // Update the chat messages on the screen
-//     const user = document.getElementById('chats');
-//     user.innerHTML = ''; // Clear previous messages
-
-//     for (var i = 0; i < data.length; i++) {
-//         const li = document.createElement('li');
-//         li.textContent = `${data[i].message}`;
-//         user.appendChild(li);
-//     }
-// };
-
-// Call functions on initial load
-//await activateusers();
 await updateactiveusers();
 await activateusers();
 
-//await updateChatMessages();
-
-// Set up a timeout to update the chat messages every second
-// setInterval(async () => {
-//     await updateactiveusers();
-//     await updateChatMessages();
-// }, 1000);
       
 })
 
+const activateusers = async()=>{
+const activeusers = await axios.get('http://13.49.249.217:3000/get/activeusers')
+console.log(activeusers)
+const user = document.getElementById('users')
+user.innerHTML = '';
+const active = activeusers.data.activeusers
+console.log(active)
+for(var i =0; i<active.length; i++){
+const li = document.createElement('li')
+li.textContent = `${active[i].Name} has joined`
+user.appendChild(li)
+}
+console.log('33333333333333333333')
+
+}
+
+
+const updateactiveusers = async()=>{
+    const token = localStorage.getItem('token')
+const decodedtoken = parseJwt(token)
+console.log(decodedtoken)
+const userName = decodedtoken.name
+
+const updateactive = await axios.put(`http://13.49.249.217:3000/user/active/${decodedtoken.id}`)
+  if(updateactive.status === 201){
+    ShowMessagesOnScreen()
+  }
+  console.log('22222222222222222222')
+
+}
+
+socket.on('new-user', async (data) => {
+    console.log(data)
+     await updateactiveusers();
+     await activateusers();
+});
+
+// socket.on('remove-user', async(data)=>{
+//     console.log('AAAAAAAAAAAAA')
+//     const token = localStorage.getItem('token')
+//     const decodedtoken = parseJwt(token)
+//     const userId = decodedtoken.id
+//     const obj = {
+//         userId: userId
+//     }
+//     socket.emit('loggedUser',obj )
+// })
+
+// socket.on('removing',async(obj)=>{
+//     console.log('bbbbbbbbbbb',obj)
+
+//     await logoutUserFromDB(obj)
+//     await updateactiveusers();
+//     await activateusers();
+// })
+
+socket.on('chat-message',(data)=>{
+    console.log('++++++++++++++++')
+    chatMessages(data)
+
+})
+
+
 
 async function sendmessage(event){
-
-    event.preventDefault();
+    const token = localStorage.getItem('token')
+    const decodedtoken = parseJwt(token)
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAA",decodedtoken)
+    const userName = decodedtoken.name
 
     const messageInput = document.getElementById('messageInput');
     const message = messageInput.value;
-    console.log("messageoutcome",message)
 
+    const contents = {
+        Name:userName,
+        Message:message
+    }
 
-    const token = localStorage.getItem('token')
-    const decodedtoken = parseJwt(token)
-    console.log(decodedtoken)
-    const userName = decodedtoken.name
+    event.preventDefault();
+
+    socket.emit('message',contents)
 
     const content = {
         message:message
     }
 
-
     const response = await axios.post('http://13.49.249.217:3000/user/message', content,  { headers: { "Authorization": token } })
-    console.log("*",response.data.Name)
+    console.log("*",response.data)
 
+}
+
+
+async function chatMessages(userdata){
+    const token = localStorage.getItem('token')
+    const decodedtoken = parseJwt(token)
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAA",decodedtoken)
+    const userName = decodedtoken.name
+
+      console.log('~~~~~~~~~~~~~', userdata)
     const chatcontainer = document.getElementById('chats')
-    const li = document.createElement('li')
-    if(response.data.data.userName===userName){
-        li.textContent = `you: ${response.data.data.message}`
-    }else{
-        li.textContent = `${response.data.data.userName}: ${response.data.data.message}`
-    }
-    chatcontainer.appendChild(li)
+  const li = document.createElement('p')
+  if(userName === userdata.Name){
+    li.style.textAlign = 'left';
+  li.textContent = `you: ${userdata.Message}`
+  }else{
+    li.style.textAlign = 'right';
+    li.textContent = `${userdata.Name}: ${userdata.Message}`
+  }
+  chatcontainer.appendChild(li)
+  scrollToBottom()
 
-    event.target.reset();
+    messageInput.value = '';
 }
 
 
@@ -154,10 +180,12 @@ function ShowMergeMessageOnScreen(mergedData){
     const decodedtoken = parseJwt(token)
     console.log(decodedtoken)
     const userName = decodedtoken.name
+
+    const user = document.getElementById('chats')
+    user.innerHTML = ''
     
     console.log("under ShowMergeMessageOnScreen function")
     for(var i =0; i<mergedData.length; i++){
-            const user = document.getElementById('chats')
         const li = document.createElement('p')
 
         if(mergedData[i].userName === userName){
@@ -176,19 +204,45 @@ function StoreMergeMessageOnLS(mergedData,lastMessageId){
     localStorage.setItem('lastMessageId',lastMessageId)
 }
 
+
 const LogOut = document.getElementById('logout');
     LogOut.addEventListener('click', async () => {
-    const token = localStorage.getItem('token');
-    const update = await axios.put('http://13.49.249.217:3000/update',null, { headers: { "Authorization": token } })
+    
+        const token = localStorage.getItem('token')
+        const decodedtoken = parseJwt(token)
+        const userId = decodedtoken.id
+        const obj = {
+            userId: userId
+        }
+    
+       const update =  await logoutUserFromDB(obj)
+       console.log('+++++++++++++', update)
 
-    if(update.data.message === 'success'){
-        alert("user logged Out Successfully")
-        window.location.href = '../Login/login.html'
-    }
+        // if(update.data.message === 'success'){
+            alert("user logged Out Successfully")
+            window.location.href = '../Login/login.html'
+        // }
 
 })
 
-const groupContainer = document.getElementById('SeeAllGroups')
-   groupContainer.addEventListener('click',async()=>{
-    
-   })
+async function logoutUserFromDB(obj){
+    console.log('inside logout DB')
+    const token = localStorage.getItem('token');
+    const update = await axios.put('http://13.49.249.217:3000/update',obj, { headers: { "Authorization": token } })
+    console.log('>>>>>>>>>>>>>>>',update)
+    console.log('111111111111111')
+}
+
+
+function scrollToBottom(){
+    const chatcontainer = document.getElementById('chatContainer')
+    chatcontainer.scrollTo(0,chatcontainer.scrollHeight)
+}
+
+
+function usersScrollToBottom(){
+    const usersContainer = document.getElementById('usersContainer')
+    usersContainer.scrollTo(0,usersContainer.scrollHeight)
+}
+
+

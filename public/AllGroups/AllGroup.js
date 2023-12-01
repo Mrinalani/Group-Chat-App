@@ -11,6 +11,8 @@ function parseJwt (token) {
 
 const ismemberChecked = false;
 
+const socket = io();
+
 window.addEventListener('DOMContentLoaded', async()=>{
 
 const AllGroups = document.getElementById('AllGroups');
@@ -63,13 +65,6 @@ const AllGroups = document.getElementById('AllGroups');
             GroupContainer.appendChild(deleteButton)
             GroupContainer.append(addRemoveButton)
           
-             
-            // const id = localStorage.getItem('SelectedGroupId')
-            // const Name = localStorage.getItem('SelectedGroupName')
-            // if(Name){
-            // IsMember(id, Name)
-            // }
-           // ShowUserChatsOnScreen()
         });
     } catch (error) {
         console.error(error);
@@ -114,6 +109,9 @@ const groupNamesString = groupNamesArray.join(', ');
     console.log(err)
   }
 }
+socket.on('group-chat-message',(content)=>{
+      groupChatmessages(content)
+})
 
 
 async function sendmessage(event){
@@ -133,26 +131,39 @@ async function sendmessage(event){
 
   const content = {
       message:message,
-      groupId:groupId
+      groupId:groupId,
+      Name:userName,
   }
-
+  socket.emit('groupMessage', content)
 
   const response = await axios.post('http://13.49.249.217:3000/group/chats', content, {headers:{'Authorization':token}})
   console.log( "data",response.data.RetrievedData)
+}
+  
+
+async function groupChatmessages(userdata){
+
+  const token = localStorage.getItem('token')
+  const decodedtoken = parseJwt(token)
+  console.log(decodedtoken)
+  const userName = decodedtoken.name
 
   const chatcontainer = document.getElementById('chats')
   const li = document.createElement('p')
-  if(response.data.RetrievedData.userName === userName){
+  if(userdata.Name === userName){
     li.style.textAlign = 'left';
-  li.textContent = `you: ${response.data.RetrievedData.Chats}`
+  li.textContent = `you: ${userdata.message}`
   }else{
     li.style.textAlign = 'right';
-    li.textContent = `${response.data.RetrievedData.userName}: ${response.data.RetrievedData.Chats}`
+    li.textContent = `${userdata.Name}: ${userdata.message}`
   }
   chatcontainer.appendChild(li)
 
-  event.target.reset();
+  const messageInput = document.getElementById('messageInput');
+  scrollToBottom()
+  messageInput.value = '';
 }
+
 
 
 async function ShowUserChatsOnScreen(id){
@@ -251,4 +262,9 @@ async function userIsAdmin(groupId){
    }else{
     alert('Only Admin Can Delete Group')
    }
+}
+
+function scrollToBottom(){
+  const chatcontainer = document.getElementById('chatContainer')
+  chatcontainer.scrollTo(0,chatcontainer.scrollHeight)
 }

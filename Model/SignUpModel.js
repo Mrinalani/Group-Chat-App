@@ -18,7 +18,7 @@ const Signup = sequelize.define('signup',{
         unique: true
     },
     Phone: {
-        type:Sequelize.INTEGER,
+        type:Sequelize.STRING,
         allowNull: false,  
     },
     Password:{

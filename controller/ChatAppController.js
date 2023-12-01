@@ -70,7 +70,9 @@ exports.getactiveusers = async (req, res, next) => {
 };
 
 exports.update = async (req,res,next)=>{
-    const data = await signup.findOne({where:{id:req.user.id}})
+    const data = await signup.findOne({where:{id:req.body.userId}})
+    if(data){
     const update = await data.update({Active:false})
-    res.status(201).json({message:'success'})
+    res.status(201).json({message:'success', update:update})
+    }
 }
