@@ -1,4 +1,8 @@
 const express= require('express');
+const multer=require('multer')
+const storage=multer.memoryStorage()
+const upload = multer({ storage: storage }); 
+
 
 const router = express.Router();
 
@@ -18,5 +22,6 @@ router.get('/server/Groupmessages/:groupId',authentication.authenticate, groupMe
 
 router.get('/check/isAdmin/:groupId',authentication.authenticate,groupMemberController.isAdmin)
 
+router.post('/groupchat/add-file',upload.single('file'),authentication.authenticate, groupMemberController.uploadFile)
 
 module.exports = router

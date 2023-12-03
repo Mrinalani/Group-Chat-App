@@ -145,11 +145,22 @@ async function groupChatmessages(userdata){
 
   const token = localStorage.getItem('token')
   const decodedtoken = parseJwt(token)
-  console.log(decodedtoken)
   const userName = decodedtoken.name
+
+  console.log('%%%%%%%%%%%%%%%%%%%%%%:', userdata)
 
   const chatcontainer = document.getElementById('chats')
   const li = document.createElement('p')
+
+  const isImage =userdata.message.startsWith('https://appexpensetracking.s3.amazonaws.com/')
+
+  if (isImage) {
+    if (userName === userdata.Name) {
+        li.innerHTML = `You: <img src="${userdata.message}" alt="${userName}'s Image" style="width:20vw;height:auto">`
+    } else {
+        li.innerHTML = `${userdata.Name}: <img src="${userdata.message}" alt="${userdata.Name}'s Image" style="width:20vw;height:auto">`
+    }
+}else{
   if(userdata.Name === userName){
     li.style.textAlign = 'left';
   li.textContent = `you: ${userdata.message}`
@@ -157,6 +168,7 @@ async function groupChatmessages(userdata){
     li.style.textAlign = 'right';
     li.textContent = `${userdata.Name}: ${userdata.message}`
   }
+}
   chatcontainer.appendChild(li)
 
   const messageInput = document.getElementById('messageInput');
@@ -180,14 +192,24 @@ async function ShowUserChatsOnScreen(id){
   chatcontainer.innerHTML = "";
   data.forEach((Chat)=>{
     const li = document.createElement('p')
+
+    const isImage =Chat.Chats.startsWith('https://appexpensetracking.s3.amazonaws.com/')
+
+  if (isImage) {
+    if (userName === Chat.userName) {
+        li.innerHTML = `You: <img src="${Chat.Chats}" alt="${userName}'s Image" style="width:20vw;height:auto">`
+    } else {
+        li.innerHTML = `${Chat.userName}: <img src="${Chat.Chats}" alt="${Chat.userName}'s Image" style="width:20vw;height:auto">`
+    }
+}else{
     if(Chat.userName===userName){
       li.style.textAlign = 'left';
       li.textContent = `you: ${Chat.Chats}`
     }else{
       li.style.textAlign = 'right';
       li.textContent = `${Chat.userName}: ${Chat.Chats}`
-
     }
+  }
     chatcontainer.appendChild(li)
   
   })
@@ -267,4 +289,42 @@ async function userIsAdmin(groupId){
 function scrollToBottom(){
   const chatcontainer = document.getElementById('chatContainer')
   chatcontainer.scrollTo(0,chatcontainer.scrollHeight)
+}
+
+
+async function uploadFile(event){
+  event.preventDefault();
+  const token = localStorage.getItem('token')
+  const groupId = localStorage.getItem('SelectedGroupId')
+
+
+  const fileInput = document.querySelector('#fileInput')
+  const uploadedFile = fileInput.files[0];
+  console.log('////////////////////////// ', uploadedFile)
+
+  if (!uploadedFile) {
+      alert('No file selected')
+      return
+  }
+
+  const formData = new FormData()
+  formData.append('groupId', groupId)
+  formData.append('file', uploadedFile)
+   console.log('///////////////////////// ', formData)
+
+   const data =  await axios.post('http://13.49.249.217:3000/groupchat/add-file', formData, {headers: {
+      'Authorization': token,
+      'Content-Type': 'multipart/form-data'
+  }
+})
+ console.log('00000000000000000000000', data.data)
+const content = {
+  message:data.data.message,
+  groupId:data.data.groupId,
+  Name:data.data.userName,
+}
+socket.emit('groupMessage', content)
+
+
+    
 }

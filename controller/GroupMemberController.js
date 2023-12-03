@@ -3,6 +3,7 @@ const UserGroup = require('../Model/userGroupModel')
 const User = require('../Model/SignUpModel')
 const Chatting = require('../Model/ChattingModel')
 const { Op } = require('sequelize');
+const s3Services = require('../services/s3 services')
 
 
 exports.AllMembers = async(req,res,next)=>{
@@ -119,6 +120,28 @@ exports.isAdmin = async(req,res,next)=>{
     }
     else{
         res.status(201).json({Admin:false})
+    }
+}
+
+exports.uploadFile=async(req,res)=>{
+    try{
+        const user=req.user
+        const file=req.file
+        console.log('>>>>>>>>>>>>>>>>>> file:', file)
+        const groupId=req.body.groupId
+        console.log('groupid:', groupId)
+        const fileName=`chat${user.id}/${new Date()}`
+        const fileURL= await s3Services.uploadToS3 (file,fileName) 
+         console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>location',fileURL)
+       const data = await Chatting.create({Chats:fileURL,userName:req.user.Name ,groupId:groupId})
+
+       res.status(200).json({userName:user.Name,message:fileURL, groupId:groupId} )
+
+       console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>,', data)
+
+
+    }catch(err){
+        console.log(err)
     }
 }
 

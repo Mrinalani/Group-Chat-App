@@ -121,6 +121,15 @@ async function chatMessages(userdata){
       console.log('~~~~~~~~~~~~~', userdata)
     const chatcontainer = document.getElementById('chats')
   const li = document.createElement('p')
+  const isImage =userdata.Message.startsWith('https://appexpensetracking.s3.amazonaws.com/')
+
+  if (isImage) {
+    if (userName === userdata.Name) {
+        li.innerHTML = `You: <img src="${userdata.Message}" alt="${userName}'s Image" style="width:20vw;height:auto">`
+    } else {
+        li.innerHTML = `${userdata.Name}: <img src="${userdata.Message}" alt="${userdata.Name}'s Image" style="width:20vw;height:auto">`
+    }
+}else{
   if(userName === userdata.Name){
     li.style.textAlign = 'left';
   li.textContent = `you: ${userdata.Message}`
@@ -128,6 +137,7 @@ async function chatMessages(userdata){
     li.style.textAlign = 'right';
     li.textContent = `${userdata.Name}: ${userdata.Message}`
   }
+}
   chatcontainer.appendChild(li)
   scrollToBottom()
 
@@ -185,9 +195,19 @@ function ShowMergeMessageOnScreen(mergedData){
     user.innerHTML = ''
     
     console.log("under ShowMergeMessageOnScreen function")
+    console.log(mergedData)
     for(var i =0; i<mergedData.length; i++){
         const li = document.createElement('p')
 
+        const isImage =mergedData[i].message.startsWith('https://appexpensetracking.s3.amazonaws.com/')
+
+  if (isImage) {
+    if (userName === mergedData[i].userName) {
+        li.innerHTML = `You: <img src="${mergedData[i].message}" alt="${userName}'s Image" style="width:20vw;height:auto">`
+    } else {
+        li.innerHTML = `${mergedData[i].userName}: <img src="${mergedData[i].message}" alt="${mergedData[i].userName}'s Image" style="width:20vw;height:auto">`
+    }
+}else{
         if(mergedData[i].userName === userName){
             li.style.textAlign = 'left';
             li.textContent = `you: ${mergedData[i].message}`
@@ -195,6 +215,7 @@ function ShowMergeMessageOnScreen(mergedData){
             li.style.textAlign = 'right';
             li.textContent = `${mergedData[i].userName}: ${mergedData[i].message}`
         }
+    }
         user.appendChild(li)
         }
 }
@@ -244,5 +265,41 @@ function usersScrollToBottom(){
     const usersContainer = document.getElementById('usersContainer')
     usersContainer.scrollTo(0,usersContainer.scrollHeight)
 }
+
+async function uploadFile(event){
+    event.preventDefault();
+    const token = localStorage.getItem('token')
+    const fileInput = document.querySelector('#fileInput')
+    const uploadedFile = fileInput.files[0];
+    console.log('////////////////////////// ', uploadedFile)
+
+    if (!uploadedFile) {
+        alert('No file selected')
+        return
+    }
+
+    const formData = new FormData()
+   // formData.append('groupId', groupId)
+    formData.append('file', uploadedFile)
+     console.log('///////////////////////// ', formData)
+
+     const data =  await axios.post('http://13.49.249.217:3000/chat/add-file', formData, {headers: {
+        'Authorization': token,
+        'Content-Type': 'multipart/form-data'
+    }
+})
+const contents = {
+    Name:data.data.userName,
+    Message:data.data.message
+}
+
+socket.emit('message',contents)
+
+
+      
+}
+
+
+
 
 

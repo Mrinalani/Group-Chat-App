@@ -1,6 +1,7 @@
 const signup = require('../Model/SignUpModel')
 const Message = require('../Model/MessageModel')
 const { Op } = require('sequelize');
+const s3Services = require('../services/s3 services')
 
 exports.postmessage = async(req,res,next)=>{
     var message = req.body.message
@@ -74,5 +75,26 @@ exports.update = async (req,res,next)=>{
     if(data){
     const update = await data.update({Active:false})
     res.status(201).json({message:'success', update:update})
+    }
+}
+
+
+exports.uploadFile=async(req,res)=>{
+    try{
+        const user=req.user
+        const file=req.file
+        console.log('>>>>>>>>>>>>>>>>>> file:', file)
+       // const groupId=req.body.groupId
+        const fileName=`chat${user.id}/${new Date()}`
+        const fileURL= await s3Services.uploadToS3 (file,fileName) 
+         console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>location',fileURL)
+       const data = await Message.create({message:fileURL, userName:req.user.Name, signupId:req.user.id})
+
+       res.status(200).json({userName:user.Name,message:data.message} )
+
+
+
+    }catch(err){
+        console.log(err)
     }
 }
