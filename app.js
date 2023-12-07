@@ -10,14 +10,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-//app.use((cors))
-// app.use(cors({
-//     origin: '*',
-//     credentials: true
-// }));
-
 app.use(cors({
-    origin: 'http://13.49.249.217:3000',
+    origin: 'http://localhost:3000',
     credentials: true
 }))
 
@@ -57,15 +51,6 @@ function Onconnected(socket){
     console.log(socket.id)
     io.emit('new-user', socket.id)
 
-    // socket.on('disconnect',()=>{
-    //     console.log('~~~~~~~~~~~~~~~~~~~~')
-    //    io.emit('remove-user', socket.id)
-    // })
-
-    // socket.on('loggedUser',(obj)=>{
-    //     console.log('........................',obj)
-    //     socket.emit('removing',obj)
-    // })
 
     socket.on('message',(data)=>{
         io.emit('chat-message',data)

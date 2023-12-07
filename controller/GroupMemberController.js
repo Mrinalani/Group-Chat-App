@@ -5,6 +5,47 @@ const Chatting = require('../Model/ChattingModel')
 const { Op } = require('sequelize');
 const s3Services = require('../services/s3 services')
 
+const Sequelize = require('sequelize') 
+const ArchieveGroupChat = require('../Model/ArchieveGroupChats')
+const cron = require('node-cron')
+
+
+cron.schedule('0 0 * * *', async () => {
+    console.log('code is running in cron')
+    const oneDayAgo = new Date()
+    console.log('oneDayAgo', oneDayAgo)
+    const currentDay=oneDayAgo.getDate()
+    console.log('currentDay', currentDay)
+   const setDate =  oneDayAgo.setDate(currentDay-1)
+   console.log('setDate', setDate)
+
+    try{
+        const oldchat = await Chatting.findAll({ 
+            where:{ 
+                createdAt: {
+                     [Sequelize.Op.lt]: oneDayAgo} 
+                    }
+                 })
+                 console.log('old chats', oldchat)
+
+            for (let chat of oldchat) {
+                await ArchieveGroupChat.create({
+                    Chats:chat.Chats,
+                    userName:chat.userName ,
+                    groupId:chat.groupId
+                 })
+
+                 await chat.destroy()
+             }
+           
+
+
+    }catch (error) {
+        console.error(error)
+    }
+   
+})
+
 
 exports.AllMembers = async(req,res,next)=>{
     try {

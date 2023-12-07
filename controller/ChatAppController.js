@@ -2,6 +2,42 @@ const signup = require('../Model/SignUpModel')
 const Message = require('../Model/MessageModel')
 const { Op } = require('sequelize');
 const s3Services = require('../services/s3 services')
+const Sequelize = require('sequelize') 
+const ArchieveChat = require('../Model/ArchievedChats')
+const cron = require('node-cron')
+
+cron.schedule('0 0 * * *', async () => {
+   // console.log('code is running in cron')
+    const oneDayAgo = new Date()
+    const currentDay=oneDayAgo.getDate()
+   const setDate =  oneDayAgo.setDate(currentDay-1)
+
+    try{
+        const oldchat = await Message.findAll({ 
+            where:{ 
+                createdAt: {
+                     [Sequelize.Op.lt]: oneDayAgo} 
+                    }
+                 })
+                 console.log('old chats', oldchat)
+
+            for (let chat of oldchat) {
+                await ArchieveChat.create({
+                messageContent: chat.message,
+                userName: chat.userName,
+                userId: chat.signupId,
+                 })
+
+                 await chat.destroy()
+             }
+           
+
+
+    }catch (error) {
+        console.error(error)
+    }
+   
+})
 
 exports.postmessage = async(req,res,next)=>{
     var message = req.body.message
