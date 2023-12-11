@@ -11,7 +11,7 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: 'http://13.49.249.217:3000',
     credentials: true
 }))
 

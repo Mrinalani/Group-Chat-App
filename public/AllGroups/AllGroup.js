@@ -19,7 +19,7 @@ const AllGroups = document.getElementById('AllGroups');
 
     try {
       const token = localStorage.getItem('token')
-        const groups = await axios.get('http://localhost:3000/group/AllMembers',{headers: { "Authorization": token}});
+        const groups = await axios.get('http://13.49.249.217:3000/group/AllMembers',{headers: { "Authorization": token}});
         const groupMembers = groups.data.Members;
         console.log("groupmembers=", groupMembers)
         
@@ -76,7 +76,7 @@ const AllGroups = document.getElementById('AllGroups');
 async function IsMember(groupId, Name) {
     try{
     const token = localStorage.getItem('token')
-   const result = await axios.get(`http://localhost:3000/Group/IsMember/${groupId}`,{ headers: { "Authorization": token } } )
+   const result = await axios.get(`http://13.49.249.217:3000/Group/IsMember/${groupId}`,{ headers: { "Authorization": token } } )
    console.log("isMemberResult = ", result)
 
    if(result.data.isMember === true){
@@ -136,7 +136,7 @@ async function sendmessage(event){
   }
   socket.emit('groupMessage', content)
 
-  const response = await axios.post('http://localhost:3000/group/chats', content, {headers:{'Authorization':token}})
+  const response = await axios.post('http://13.49.249.217:3000/group/chats', content, {headers:{'Authorization':token}})
   console.log( "data",response.data.RetrievedData)
 }
   
@@ -184,7 +184,7 @@ async function ShowUserChatsOnScreen(id){
   console.log(decodedtoken)
   const userName = decodedtoken.name
 
-  const groupdata = await axios.get(`http://localhost:3000/particulargroup/chats/${id}`,{headers:{'Authorization':token}})
+  const groupdata = await axios.get(`http://13.49.249.217:3000/particulargroup/chats/${id}`,{headers:{'Authorization':token}})
       console.log("checking@@@@@",groupdata.data)
       const data = groupdata.data.RetrievedData
 
@@ -222,7 +222,7 @@ async function ShowMessagesOnScreen(groupId){
   const lastMessageId = localStorage.getItem('lastGroupMessageId') || 0;
   console.log('lastMessageId:',lastMessageId)
 
-  const databasedata = await axios.get(`http://localhost:3000/server/Groupmessages/${groupId}?lastMessageId=${lastMessageId}`, { headers: { "Authorization": token } })
+  const databasedata = await axios.get(`http://13.49.249.217:3000/server/Groupmessages/${groupId}?lastMessageId=${lastMessageId}`, { headers: { "Authorization": token } })
   
   console.log('databasedata:',databasedata)
 
@@ -276,7 +276,7 @@ function StoreMergeMessageOnLS(mergedData,lastMessageId){
 
 async function userIsAdmin(groupId){
   const token = localStorage.getItem('token')
-   const isAdmin = await axios.get(`http://localhost:3000/check/isAdmin/${groupId}`, { headers: { "Authorization": token } })
+   const isAdmin = await axios.get(`http://13.49.249.217:3000/check/isAdmin/${groupId}`, { headers: { "Authorization": token } })
    console.log("isAdminData",isAdmin)
    if(isAdmin.data.Admin == true){
     alert('Deleted Sucessfully')
@@ -312,7 +312,7 @@ async function uploadFile(event){
   formData.append('file', uploadedFile)
    console.log('///////////////////////// ', formData)
 
-   const data =  await axios.post('http://localhost:3000/groupchat/add-file', formData, {headers: {
+   const data =  await axios.post('http://13.49.249.217:3000/groupchat/add-file', formData, {headers: {
       'Authorization': token,
       'Content-Type': 'multipart/form-data'
   }

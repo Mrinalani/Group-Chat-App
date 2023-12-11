@@ -21,7 +21,7 @@ await activateusers();
 })
 
 const activateusers = async()=>{
-const activeusers = await axios.get('http://localhost:3000/get/activeusers')
+const activeusers = await axios.get('http://13.49.249.217:3000/get/activeusers')
 console.log(activeusers)
 const user = document.getElementById('users')
 user.innerHTML = '';
@@ -43,7 +43,7 @@ const decodedtoken = parseJwt(token)
 console.log(decodedtoken)
 const userName = decodedtoken.name
 
-const updateactive = await axios.put(`http://localhost:3000/user/active/${decodedtoken.id}`)
+const updateactive = await axios.put(`http://13.49.249.217:3000/user/active/${decodedtoken.id}`)
   if(updateactive.status === 201){
     ShowMessagesOnScreen()
   }
@@ -106,7 +106,7 @@ async function sendmessage(event){
         message:message
     }
 
-    const response = await axios.post('http://localhost:3000/user/message', content,  { headers: { "Authorization": token } })
+    const response = await axios.post('http://13.49.249.217:3000/user/message', content,  { headers: { "Authorization": token } })
     console.log("*",response.data)
 
 }
@@ -154,7 +154,7 @@ async function ShowMessagesOnScreen(){
     const lastMessageId = localStorage.getItem('lastMessageId') || 0;
     console.log('lastMessageId:',lastMessageId)
 
-    const databasedata = await axios.get(`http://localhost:3000/server/messages?lastMessageId=${lastMessageId}`, { headers: { "Authorization": token } })
+    const databasedata = await axios.get(`http://13.49.249.217:3000/server/messages?lastMessageId=${lastMessageId}`, { headers: { "Authorization": token } })
     console.log('databasedata:',databasedata)
 
     const newmessages = databasedata.data.message
@@ -249,7 +249,7 @@ const LogOut = document.getElementById('logout');
 async function logoutUserFromDB(obj){
     console.log('inside logout DB')
     const token = localStorage.getItem('token');
-    const update = await axios.put('http://localhost:3000/update',obj, { headers: { "Authorization": token } })
+    const update = await axios.put('http://13.49.249.217:3000/update',obj, { headers: { "Authorization": token } })
     console.log('>>>>>>>>>>>>>>>',update)
     console.log('111111111111111')
 }
@@ -283,7 +283,7 @@ async function uploadFile(event){
     formData.append('file', uploadedFile)
      console.log('///////////////////////// ', formData)
 
-     const data =  await axios.post('http://localhost:3000/chat/add-file', formData, {headers: {
+     const data =  await axios.post('http://13.49.249.217:3000/chat/add-file', formData, {headers: {
         'Authorization': token,
         'Content-Type': 'multipart/form-data'
     }

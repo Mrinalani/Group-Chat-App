@@ -19,6 +19,8 @@ cron.schedule('0 0 * * *', async () => {
    const setDate =  oneDayAgo.setDate(currentDay-1)
    console.log('setDate', setDate)
 
+   
+
     try{
         const oldchat = await Chatting.findAll({ 
             where:{ 
