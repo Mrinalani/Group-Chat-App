@@ -17,7 +17,7 @@ cron.schedule('0 0 * * *', async () => {
     const currentDay=oneDayAgo.getDate()
    // console.log('currentDay', currentDay)
    const setDate =  oneDayAgo.setDate(currentDay-1)
-   console.log('setDate', setDate)
+   //console.log('setDate', setDate)
 
    
 
