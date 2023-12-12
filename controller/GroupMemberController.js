@@ -11,11 +11,11 @@ const cron = require('node-cron')
 
 
 cron.schedule('0 0 * * *', async () => {
-    console.log('code is running in cron')
+    console.log('code is running in cron 2')
     const oneDayAgo = new Date()
-    console.log('oneDayAgo', oneDayAgo)
+   // console.log('oneDayAgo', oneDayAgo)
     const currentDay=oneDayAgo.getDate()
-    console.log('currentDay', currentDay)
+   // console.log('currentDay', currentDay)
    const setDate =  oneDayAgo.setDate(currentDay-1)
    console.log('setDate', setDate)
 
@@ -28,7 +28,12 @@ cron.schedule('0 0 * * *', async () => {
                      [Sequelize.Op.lt]: oneDayAgo} 
                     }
                  })
-                 console.log('old chats', oldchat)
+                 console.log('oneDayAgo', oneDayAgo)
+                 console.log('currentDay', currentDay)
+                 console.log('setDate', setDate)
+                 console.log('oldchat', oldchat)
+
+
 
             for (let chat of oldchat) {
                 await ArchieveGroupChat.create({
