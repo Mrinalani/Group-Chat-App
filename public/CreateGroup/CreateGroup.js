@@ -13,7 +13,7 @@ function createGroup(groupName){
     const data={
         groupName:groupName
     }
-    axios.post('http://localhost:3000/group/createGroup',data,{headers:{'Authorization':token}}).then((res)=>{
+    axios.post('http://51.21.12.32:3000/group/createGroup',data,{headers:{'Authorization':token}}).then((res)=>{
         alert(res.data.message)
         localStorage.setItem('groupId',res.data.groupId)
     })
@@ -28,17 +28,17 @@ addParticipantBtn.addEventListener('click', async (e) => {
    const token = localStorage.getItem('token')
    const groupId = localStorage.getItem('groupId')
 
-   const isAdmin = await axios.get(`http://localhost:3000/user/isAdmin/${groupId}`,{headers:{'Authorization':token}})
+   const isAdmin = await axios.get(`http://51.21.12.32:3000/user/isAdmin/${groupId}`,{headers:{'Authorization':token}})
       if(isAdmin.data.isAdmin === false){
          alert('Only Admin Can Add Participants')
       }
       else{
         console.log(isAdmin)
-    const allusers = await axios.get('http://localhost:3000/users/getAll');
+    const allusers = await axios.get('http://51.21.12.32:3000/users/getAll');
     const usersData = allusers.data.participants;
     console.log("getting all users =",usersData)
 
-    const groupMembersResponse = await axios.get(`http://localhost:3000/groups/${groupId}/members`,);
+    const groupMembersResponse = await axios.get(`http://51.21.12.32:3000/groups/${groupId}/members`,);
     console.log("groupMenber:" ,groupMembersResponse)
 
 
@@ -90,7 +90,7 @@ addParticipantBtn.addEventListener('click', async (e) => {
         const uncheckedParticipants = Array.from(participantsContainer.querySelectorAll('input[type=checkbox]:not(:checked)')).map(checkbox => checkbox.value)
         console.log("unselectedParticipants", uncheckedParticipants)
         
-        axios.post('http://localhost:3000/add/participants', {
+        axios.post('http://51.21.12.32:3000/add/participants', {
             userIds: selectedParticipants,
             groupId: groupId, 
         })
@@ -105,7 +105,7 @@ addParticipantBtn.addEventListener('click', async (e) => {
             // Handle error
         });
 
-       const removeParticipants = axios.post('http://localhost:3000/remove/participants',{
+       const removeParticipants = axios.post('http://51.21.12.32:3000/remove/participants',{
         userIds: uncheckedParticipants,
         groupId: groupId
        }).then((response)=>{
@@ -128,7 +128,7 @@ groupMembersButton.addEventListener('click', async () => {
     try {
         // Make a request to your server to get the group members
         const groupId = localStorage.getItem('groupId'); // Replace 'yourGroupId' with the actual group ID
-        const groupMembersResponse = await axios.get(`http://localhost:3000/groups/${groupId}/members`,);
+        const groupMembersResponse = await axios.get(`http://51.21.12.32:3000/groups/${groupId}/members`,);
         const groupMembersData = groupMembersResponse.data;
 
         // Clear previous content in the container
@@ -152,7 +152,7 @@ async function makeAdmin(userId,groupId){
         userId: userId,
         groupId: groupId
     }
-    const adminMember = await axios.post('http://localhost:3000/user/makeAdmin',Ids)
+    const adminMember = await axios.post('http://51.21.12.32:3000/user/makeAdmin',Ids)
     if(adminMember.data.message === 'Now Admin'){
         alert('successfully added admin')
     }else{

@@ -10,10 +10,16 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+// app.use(cors({
+//     origin: 'http://51.21.12.32:3000',
+//     credentials: true
+// }))
+
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: '*',
     credentials: true
-}))
+}));
+
 
 
 const signupRouter = require('./Router/SignUpRouter')
